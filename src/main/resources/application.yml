@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: crypto-pulse-alert
+
+crypto:
+  history:
+    capacity: 1000
+  check:
+    interval-ms: 15000
+    urls:
+      - https://api.bybit.com/v5/market/tickers?category=spot&symbol=BTCUSDT
+      - https://api.bybit.com/v5/market/tickers?category=spot&symbol=LINKUSDT
