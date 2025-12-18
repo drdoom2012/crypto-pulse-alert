@@ -22,7 +22,7 @@ public class BybitPriceService {
         this.restTemplate = restTemplate;
     }
 
-    public double loadPrice(String url) {
+    public double loadPrice(String symbol, String url) {
         try {
             ResponseEntity<BybitTickerResponse> response =
                     restTemplate.exchange(
@@ -41,7 +41,7 @@ public class BybitPriceService {
             BybitTicker ticker = body.getResult().getList().get(0);
             double price = ticker.getLastPriceAsDouble();
 
-            log.info("{} -> price {}", url, price);
+            log.info("{} -> price {}", symbol, price);
             return price;
 
         } catch (RestClientResponseException e) {

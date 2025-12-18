@@ -1,6 +1,6 @@
 package cz.erebos.cpa.core.history;
 
-import cz.erebos.cpa.config.HistoryProps;
+import cz.erebos.cpa.config.CryptoProperties;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -12,8 +12,8 @@ public class PriceHistoryStore {
     private final Map<String, BoundedFifo<PriceSample>> history = new ConcurrentHashMap<>();
     private final int capacity;
 
-    public PriceHistoryStore(HistoryProps props) {
-        this.capacity = props.getCapacity();
+    public PriceHistoryStore(CryptoProperties props) {
+        this.capacity = props.getHistory().getCapacity();
     }
 
     public void addPrice(String key, double price) {

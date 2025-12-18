@@ -1,7 +1,7 @@
 package cz.erebos.cpa.jobs;
 
+import cz.erebos.cpa.config.CryptoProperties;
 import cz.erebos.cpa.integration.bybit.BybitPriceService;
-import cz.erebos.cpa.config.UrlCheckProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +16,11 @@ public class UrlCheckScheduler {
     private static final Logger log = LoggerFactory.getLogger(UrlCheckScheduler.class);
 
     private final BybitPriceService bybitPriceService;
-    private final UrlCheckProperties props;
+    private final CryptoProperties props;
     private final ExecutorService executor;
 
     public UrlCheckScheduler(BybitPriceService bybitPriceService,
-                             UrlCheckProperties props,
+                             CryptoProperties props,
                              ExecutorService urlCheckExecutor) {
         this.bybitPriceService = bybitPriceService;
         this.props = props;
@@ -29,17 +29,17 @@ public class UrlCheckScheduler {
 
     @Scheduled(fixedDelayString = "${crypto.check.interval-ms:10000}")
     public void run() {
-        List<String> urls = props.getUrls();
-        if (urls == null || urls.isEmpty()) {
-            log.info("🟡 No URLs configured for checking");
+        List<CryptoProperties.Asset> assets = props.getCheck().getAssets();
+        if (assets == null || assets.isEmpty()) {
+            log.info("🟡 No asset configured for checking");
             return;
         }
 
-        for (final String url : urls) {
+        for (final CryptoProperties.Asset asset : assets) {
             executor.submit(new Runnable() {
                 @Override
                 public void run() {
-                    bybitPriceService.loadPrice(url);
+                    bybitPriceService.loadPrice(asset.getSymbol(), asset.getUrl());
                 }
             });
         }
